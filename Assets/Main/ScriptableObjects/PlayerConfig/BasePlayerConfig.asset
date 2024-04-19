@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: BasePlayerConfig
   m_EditorClassIdentifier: 
   <RotationSpeed>k__BackingField: 5
-  minX: -30
-  maxX: 70
+  <minX>k__BackingField: -30
+  <maxX>k__BackingField: 70
