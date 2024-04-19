@@ -143,8 +143,8 @@ MonoBehaviour:
   syncDirection: 0
   syncMode: 0
   syncInterval: 0
-  ballReference: {fileID: 0}
-  shootPoint: {fileID: 4009695915299756404}
+  _shootPoint: {fileID: 4009695915299756404}
+  _config: {fileID: 11400000, guid: 00af6c29f667f024ebfc39487ac2d11b, type: 2}
 --- !u!114 &3623080554033056446
 MonoBehaviour:
   m_ObjectHideFlags: 0

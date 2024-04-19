@@ -149,10 +149,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 043658e669e9dcf4ca0dbc1b591f3885, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objectToThrow: {fileID: 6357638279255707900, guid: 8d0dd62af4e42f34bbb2b36da871ebb7,
+  _objectToThrow: {fileID: 6357638279255707900, guid: 8d0dd62af4e42f34bbb2b36da871ebb7,
     type: 3}
-  hitMarkerPrefab: {fileID: 4435721932257708327, guid: c07c1d95cff72ea4eb71fef266e51496,
+  _hitMarkerPrefab: {fileID: 4435721932257708327, guid: c07c1d95cff72ea4eb71fef266e51496,
     type: 3}
-  maxPoints: 50
-  increment: 0.025
-  rayOverlap: 1.1
+  _maxPoints: 50
+  _increment: 0.025
+  _rayOverlap: 1.1

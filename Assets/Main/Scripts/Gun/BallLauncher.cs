@@ -5,19 +5,14 @@ using UnityEngine;
 
 public class BallLauncher : NetworkBehaviour, ILaunch
 {
-    [SerializeField] private Ball ballReference;
-    [SerializeField] private Transform shootPoint;
-    
-    private float _minHoldAmplification = 0.2f;
-    private float _maxHoldAmplification = 3f;
-    private float _forceAmmount = 40f;
-    private float _attackRate = 5f; //Attacks per second
+    [SerializeField] private Transform _shootPoint;
+    [SerializeField] private LauncherConfig _config;
 
     private byte _ownerID;
     private Coroutine _currentCoroutine;
-    private float cdTime => 1.0f / _attackRate; //Cooldown time 
+    private float cdTime => _config ? 1.0f / _config.AttackRate : 0.5f; //Cooldown time 
 
-    public Transform StartPoint => shootPoint;
+    public Transform StartPoint => _shootPoint;
 
 
     public void Initialize(byte ownerID)
@@ -27,7 +22,7 @@ public class BallLauncher : NetworkBehaviour, ILaunch
 
     public void Launch(float holdTime)
     {
-        CmdSpawnBall(holdTime, shootPoint.forward);
+        CmdSpawnBall(holdTime, _shootPoint.forward);
     }
 
     [Command]
@@ -37,12 +32,12 @@ public class BallLauncher : NetworkBehaviour, ILaunch
 
         _currentCoroutine = StartCoroutine(Reload());
         
-        float holdAmplification = Mathf.Clamp(holdTime, _minHoldAmplification, _maxHoldAmplification);
+        float holdAmplification = Mathf.Clamp(holdTime, _config.MinHoldAmplification, _config.MaxHoldAmplification);
         Ball ball = PoolSystem.GetBallFromPool();
 
         RpcShowBall(ball.gameObject);
-        ball.ResetBall(shootPoint.position);
-        ball.Push(dir, _forceAmmount * holdAmplification, _ownerID);
+        ball.ResetBall(_shootPoint.position);
+        ball.Push(dir, _config.ForceAmmount * holdAmplification, _ownerID);
     }
 
     private IEnumerator Reload()

@@ -4,24 +4,24 @@ using UnityEngine;
 [RequireComponent(typeof(LineRenderer))]
 public class TrajectoryPredictor : MonoBehaviour
 {
-    [SerializeField] private Rigidbody objectToThrow;
-    [SerializeField] private Transform hitMarkerPrefab;
+    [SerializeField] private Rigidbody _objectToThrow;
+    [SerializeField] private Transform _hitMarkerPrefab;
     private Transform _startPoint;
 
     #region Members
-    private LineRenderer trajectoryLine;
-    private Transform hitMarker;
-    [SerializeField, Range(10, 100), Tooltip("The maximum number of points the LineRenderer can have")] int maxPoints = 50;
-    [SerializeField, Range(0.01f, 0.5f), Tooltip("The time increment used to calculate the trajectory")] float increment = 0.025f;
+    private LineRenderer _trajectoryLine;
+    private Transform _hitMarker;
+    [SerializeField, Range(10, 100), Tooltip("The maximum number of points the LineRenderer can have")] int _maxPoints = 50;
+    [SerializeField, Range(0.01f, 0.5f), Tooltip("The time increment used to calculate the trajectory")] float _increment = 0.025f;
     [SerializeField, Range(1.05f, 2f), Tooltip("The raycast overlap between points in the trajectory, this is a multiplier of the length between points. 2 = twice as long")]
-    float rayOverlap = 1.1f;
+    float _rayOverlap = 1.1f;
     #endregion
 
 
     public void Initialize(Transform startPoint)
     {
-        hitMarker = Instantiate(hitMarkerPrefab);
-        trajectoryLine = GetComponent<LineRenderer>();
+        _hitMarker = Instantiate(_hitMarkerPrefab);
+        _trajectoryLine = GetComponent<LineRenderer>();
         SetTrajectoryVisible(true);
         _startPoint = startPoint;
     }
@@ -34,16 +34,16 @@ public class TrajectoryPredictor : MonoBehaviour
         Vector3 nextPosition;
         float overlap;
 
-        UpdateLineRender(maxPoints, (0, position));
+        UpdateLineRender(_maxPoints, (0, position));
 
-        for (int i = 1; i < maxPoints; i++)
+        for (int i = 1; i < _maxPoints; i++)
         {
             // Estimate velocity and update next predicted position
-            velocity = CalculateNewVelocity(velocity, projectile.drag, increment);
-            nextPosition = position + velocity * increment;
+            velocity = CalculateNewVelocity(velocity, projectile.drag, _increment);
+            nextPosition = position + velocity * _increment;
 
             // Overlap our rays by small margin to ensure we never miss a surface
-            overlap = Vector3.Distance(position, nextPosition) * rayOverlap;
+            overlap = Vector3.Distance(position, nextPosition) * _rayOverlap;
 
             //When hitting a surface we want to show the surface marker and stop updating our line
             if (Physics.Raycast(position, velocity.normalized, out RaycastHit hit, overlap))
@@ -54,16 +54,16 @@ public class TrajectoryPredictor : MonoBehaviour
             }
 
             //If nothing is hit, continue rendering the arc without a visual marker
-            hitMarker.gameObject.SetActive(false);
+            _hitMarker.gameObject.SetActive(false);
             position = nextPosition;
-            UpdateLineRender(maxPoints, (i, position)); //Unneccesary to set count here, but not harmful
+            UpdateLineRender(_maxPoints, (i, position)); //Unneccesary to set count here, but not harmful
         }
     }
 
     private void UpdateLineRender(int count, (int point, Vector3 pos) pointPos)
     {
-        trajectoryLine.positionCount = count;
-        trajectoryLine.SetPosition(pointPos.point, pointPos.pos);
+        _trajectoryLine.positionCount = count;
+        _trajectoryLine.SetPosition(pointPos.point, pointPos.pos);
     }
 
     private Vector3 CalculateNewVelocity(Vector3 velocity, float drag, float increment)
@@ -75,17 +75,17 @@ public class TrajectoryPredictor : MonoBehaviour
 
     private void MoveHitMarker(RaycastHit hit)
     {
-        hitMarker.gameObject.SetActive(true);
+        _hitMarker.gameObject.SetActive(true);
 
         // Offset marker from surface
         float offset = 0.025f;
-        hitMarker.position = hit.point + hit.normal * offset;
-        hitMarker.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
+        _hitMarker.position = hit.point + hit.normal * offset;
+        _hitMarker.rotation = Quaternion.LookRotation(hit.normal, Vector3.up);
     }
 
     public void SetTrajectoryVisible(bool visible)
     {
-        trajectoryLine.enabled = visible;
+        _trajectoryLine.enabled = visible;
         //hitMarker.gameObject.SetActive(visible);
     }
 
@@ -96,15 +96,15 @@ public class TrajectoryPredictor : MonoBehaviour
         properties.direction = _startPoint.transform.forward;
         properties.initialPosition = _startPoint.position;
         properties.initialSpeed = 40;
-        properties.mass = objectToThrow.mass;
-        properties.drag = objectToThrow.drag;
+        properties.mass = _objectToThrow.mass;
+        properties.drag = _objectToThrow.drag;
 
         return properties;
     }
 
     public void SetProjectoryActiveStatus(bool status)
     {
-        hitMarker.gameObject.SetActive(status);
-        trajectoryLine.gameObject.SetActive(status);
+        _hitMarker.gameObject.SetActive(status);
+        _trajectoryLine.gameObject.SetActive(status);
     }
 }
